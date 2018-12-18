@@ -1,8 +1,12 @@
 package ru.appliedtech.chess;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
-public class Game {
+import static ru.appliedtech.chess.GameResultSystem.*;
+import static ru.appliedtech.chess.GameResultSystem.GameResultName.*;
+
+public final class Game {
     private final String id;
     private final String whiteId;
     private final String blackId;
@@ -46,6 +50,25 @@ public class Game {
         return whiteId;
     }
 
+    public boolean isWhite(String id) {
+        return getWhiteId().equals(id);
+    }
+
+    public boolean isBlack(String id) {
+        return getBlackId().equals(id);
+    }
+
+    public boolean hasWon(String id) {
+        if (isWhite(id)) {
+            return result.getName().equals(white_won)
+                    || result.getName().equals(black_forfeit);
+        } else if (isBlack(id)) {
+            return result.getName().equals(black_won)
+                    || result.getName().equals(white_forfeit);
+        }
+        throw new IllegalArgumentException(id);
+    }
+
     public String getPgnLocation() {
         return pgnLocation;
     }
@@ -63,25 +86,11 @@ public class Game {
         throw new IllegalArgumentException(id);
     }
 
-    public Integer getScoreOf(String id) {
-        if (result == GameResult.draw) {
-            return 1;
-        } else if (result == GameResult.unknown) {
-            return null;
-        } else {
-            if (getWhiteId().equals(id)) {
-                if (result == GameResult.white_won || result == GameResult.black_forfeit) {
-                    return 2;
-                } else if (result == GameResult.black_won || result == GameResult.white_forfeit) {
-                    return 0;
-                }
-            } else if (getBlackId().equals(id)) {
-                if (result == GameResult.black_won || result == GameResult.white_forfeit) {
-                    return 2;
-                } else if (result == GameResult.white_won || result == GameResult.black_forfeit) {
-                    return 0;
-                }
-            }
+    public BigDecimal getScoreOf(String id) {
+        if (getWhiteId().equals(id)) {
+            return result.getWhiteScore();
+        } else if (getBlackId().equals(id)) {
+            return result.getBlackScore();
         }
         throw new IllegalArgumentException(id);
     }
@@ -89,5 +98,4 @@ public class Game {
     public boolean isPlayedBy(String playerId) {
         return getWhiteId().equals(playerId) || getBlackId().equals(playerId);
     }
-
 }

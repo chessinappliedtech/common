@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 
 public class GameSerializer extends StdSerializer<Game> {
+
     protected GameSerializer() {
         super(Game.class);
     }
@@ -18,7 +19,7 @@ public class GameSerializer extends StdSerializer<Game> {
         jsonGenerator.writeStringField("whiteId", game.getWhiteId());
         jsonGenerator.writeStringField("blackId", game.getBlackId());
         jsonGenerator.writeStringField("date", game.getDate());
-        jsonGenerator.writeStringField("result", game.getResult().name());
+        jsonGenerator.writeStringField("result", game.getResult().getName().name());
         jsonGenerator.writeStringField("pgnLocation", game.getPgnLocation());
         jsonGenerator.writeObjectField("outerServiceLinks", game.getOuterServiceLinks());
         jsonGenerator.writeEndObject();

@@ -44,7 +44,7 @@ public class TournamentDescriptionDeserializer extends StdDeserializer<Tournamen
                     if (nodeRoundsAmount instanceof IntNode) {
                         roundsAmount = ((IntNode) nodeRoundsAmount).asInt();
                     }
-                    tournamentSetup = new RoundRobinSetup(roundsAmount);
+                    tournamentSetup = new RoundRobinSetup(roundsAmount, GameResultSystem.STANDARD);
                 }
             }
         }

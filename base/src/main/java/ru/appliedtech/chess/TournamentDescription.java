@@ -2,7 +2,7 @@ package ru.appliedtech.chess;
 
 import java.util.List;
 
-public class TournamentDescription {
+public final class TournamentDescription {
     private final String tournamentTitle;
     private final String arbiter;
     private final List<String> deputyArbiters;

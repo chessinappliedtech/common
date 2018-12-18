@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
-public class Player {
+public final class Player {
     private final String id;
     private final String firstName;
     private final String lastName;
