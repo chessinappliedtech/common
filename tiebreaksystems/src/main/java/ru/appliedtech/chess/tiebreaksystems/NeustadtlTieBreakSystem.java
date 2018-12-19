@@ -12,10 +12,10 @@ import java.util.function.Predicate;
 import static java.util.stream.Collectors.toList;
 import static ru.appliedtech.chess.GameResultSystem.GameResultName.draw;
 
-public class BergerTieBreakSystem {
+public class NeustadtlTieBreakSystem {
     private final List<Game> games;
 
-    public BergerTieBreakSystem(List<Game> games) {
+    public NeustadtlTieBreakSystem(List<Game> games) {
         this.games = new ArrayList<>(games);
     }
 
