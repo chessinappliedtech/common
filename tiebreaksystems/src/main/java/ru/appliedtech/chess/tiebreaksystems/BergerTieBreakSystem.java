@@ -10,13 +10,12 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
-import static ru.appliedtech.chess.GameResultSystem.GameResultName.*;
+import static ru.appliedtech.chess.GameResultSystem.GameResultName.draw;
 
-public class BergerScoreSystem {
-    public static final BigDecimal TWO = new BigDecimal(2);
+public class BergerTieBreakSystem {
     private final List<Game> games;
 
-    public BergerScoreSystem(List<Game> games) {
+    public BergerTieBreakSystem(List<Game> games) {
         this.games = new ArrayList<>(games);
     }
 
@@ -25,17 +24,24 @@ public class BergerScoreSystem {
         List<String> opponentIds = games.stream()
                 .filter(game -> game.isPlayedBy(playerId))
                 .map(game -> game.getOpponentOf(playerId))
+                .distinct()
                 .collect(toList());
         return opponentIds.stream()
                 .map(opponent -> {
-                    BigDecimal opponentMultiplier = toGamesWith(playerId).andThen(toScoreMultiplier(playerId)).apply(opponent);
+                    BigDecimal opponentMark = toGamesWith(playerId).andThen(toMark(playerId)).apply(opponent);
                     BigDecimal opponentScore = toTotalScoreAt(games).apply(opponent);
-                    return opponentMultiplier.multiply(opponentScore);
+                    if (opponentMark.compareTo(BigDecimal.ZERO) == 0) {
+                        return opponentScore.multiply(new BigDecimal(0.5));
+                    } else if (opponentMark.compareTo(BigDecimal.ZERO) > 0) {
+                        return opponentScore;
+                    } else {
+                        return BigDecimal.ZERO;
+                    }
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    private Function<List<Game>, BigDecimal> toScoreMultiplier(String playerId) {
+    private Function<List<Game>, BigDecimal> toMark(String playerId) {
         return games -> games.stream()
                 .map(toOneGameMark(playerId))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
