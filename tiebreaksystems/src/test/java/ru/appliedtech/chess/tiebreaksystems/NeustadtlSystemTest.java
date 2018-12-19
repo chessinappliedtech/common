@@ -15,13 +15,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static ru.appliedtech.chess.GameResultSystem.GameResultName.*;
 
-public class NeustadtlTieBreakSystemTest {
+public class NeustadtlSystemTest {
 
     @Test
     public void noGames() {
         List<Game> games = emptyList();
-        NeustadtlTieBreakSystem neustadtlTieBreakSystem = new NeustadtlTieBreakSystem(games);
-        BigDecimal score = neustadtlTieBreakSystem.scoreOf(createPlayer("player1"));
+        NeustadtlSystem neustadtlSystem = new NeustadtlSystem(games);
+        BigDecimal score = neustadtlSystem.scoreOf(createPlayer("player1"));
         assertEquals(new BigDecimal(0), score);
     }
 
@@ -30,17 +30,17 @@ public class NeustadtlTieBreakSystemTest {
         GameResultSystem gameResultSystem = GameResultSystem.STANDARD;
         {
             Game game = createGame("player1", "player2", gameResultSystem.getResult(draw));
-            NeustadtlTieBreakSystem neustadtlTieBreakSystem = new NeustadtlTieBreakSystem(singletonList(game));
-            assertEquals(new BigDecimal(0.25), neustadtlTieBreakSystem.scoreOf(createPlayer("player1")));
-            assertEquals(new BigDecimal(0.25), neustadtlTieBreakSystem.scoreOf(createPlayer("player2")));
-            assertEquals(new BigDecimal(0), neustadtlTieBreakSystem.scoreOf(createPlayer("player3")));
+            NeustadtlSystem neustadtlSystem = new NeustadtlSystem(singletonList(game));
+            assertEquals(new BigDecimal(0.25), neustadtlSystem.scoreOf(createPlayer("player1")));
+            assertEquals(new BigDecimal(0.25), neustadtlSystem.scoreOf(createPlayer("player2")));
+            assertEquals(new BigDecimal(0), neustadtlSystem.scoreOf(createPlayer("player3")));
         }
         {
             Game game = createGame("player1", "player2", gameResultSystem.getResult(white_won));
-            NeustadtlTieBreakSystem neustadtlTieBreakSystem = new NeustadtlTieBreakSystem(singletonList(game));
-            assertEquals(new BigDecimal(0), neustadtlTieBreakSystem.scoreOf(createPlayer("player1")));
-            assertEquals(new BigDecimal(0), neustadtlTieBreakSystem.scoreOf(createPlayer("player2")));
-            assertEquals(new BigDecimal(0), neustadtlTieBreakSystem.scoreOf(createPlayer("player3")));
+            NeustadtlSystem neustadtlSystem = new NeustadtlSystem(singletonList(game));
+            assertEquals(new BigDecimal(0), neustadtlSystem.scoreOf(createPlayer("player1")));
+            assertEquals(new BigDecimal(0), neustadtlSystem.scoreOf(createPlayer("player2")));
+            assertEquals(new BigDecimal(0), neustadtlSystem.scoreOf(createPlayer("player3")));
         }
     }
 
@@ -50,32 +50,32 @@ public class NeustadtlTieBreakSystemTest {
         {
             Game game1 = createGame("player1", "player2", gameResultSystem.getResult(draw));
             Game game2 = createGame("player2", "player1", gameResultSystem.getResult(draw));
-            NeustadtlTieBreakSystem neustadtlTieBreakSystem = new NeustadtlTieBreakSystem(asList(game1, game2));
-            assertEquals(new BigDecimal(0.5), neustadtlTieBreakSystem.scoreOf(createPlayer("player1")).stripTrailingZeros());
-            assertEquals(new BigDecimal(0.5), neustadtlTieBreakSystem.scoreOf(createPlayer("player2")).stripTrailingZeros());
-            assertEquals(new BigDecimal(0), neustadtlTieBreakSystem.scoreOf(createPlayer("player3")).stripTrailingZeros());
+            NeustadtlSystem neustadtlSystem = new NeustadtlSystem(asList(game1, game2));
+            assertEquals(new BigDecimal(0.5), neustadtlSystem.scoreOf(createPlayer("player1")).stripTrailingZeros());
+            assertEquals(new BigDecimal(0.5), neustadtlSystem.scoreOf(createPlayer("player2")).stripTrailingZeros());
+            assertEquals(new BigDecimal(0), neustadtlSystem.scoreOf(createPlayer("player3")).stripTrailingZeros());
         }
         {
             Game game1 = createGame("player1", "player2", gameResultSystem.getResult(white_won));
             Game game2 = createGame("player2", "player1", gameResultSystem.getResult(white_won));
-            NeustadtlTieBreakSystem neustadtlTieBreakSystem = new NeustadtlTieBreakSystem(asList(game1, game2));
-            assertEquals(new BigDecimal(0.5), neustadtlTieBreakSystem.scoreOf(createPlayer("player1")).stripTrailingZeros());
-            assertEquals(new BigDecimal(0.5), neustadtlTieBreakSystem.scoreOf(createPlayer("player2")).stripTrailingZeros());
-            assertEquals(new BigDecimal(0), neustadtlTieBreakSystem.scoreOf(createPlayer("player3")).stripTrailingZeros());
+            NeustadtlSystem neustadtlSystem = new NeustadtlSystem(asList(game1, game2));
+            assertEquals(new BigDecimal(0.5), neustadtlSystem.scoreOf(createPlayer("player1")).stripTrailingZeros());
+            assertEquals(new BigDecimal(0.5), neustadtlSystem.scoreOf(createPlayer("player2")).stripTrailingZeros());
+            assertEquals(new BigDecimal(0), neustadtlSystem.scoreOf(createPlayer("player3")).stripTrailingZeros());
         }
         {
             Game game1 = createGame("player1", "player2", gameResultSystem.getResult(white_won));
             Game game2 = createGame("player2", "player1", gameResultSystem.getResult(black_won));
-            NeustadtlTieBreakSystem neustadtlTieBreakSystem = new NeustadtlTieBreakSystem(asList(game1, game2));
-            assertEquals(new BigDecimal(0), neustadtlTieBreakSystem.scoreOf(createPlayer("player1")).stripTrailingZeros());
-            assertEquals(new BigDecimal(0), neustadtlTieBreakSystem.scoreOf(createPlayer("player2")).stripTrailingZeros());
+            NeustadtlSystem neustadtlSystem = new NeustadtlSystem(asList(game1, game2));
+            assertEquals(new BigDecimal(0), neustadtlSystem.scoreOf(createPlayer("player1")).stripTrailingZeros());
+            assertEquals(new BigDecimal(0), neustadtlSystem.scoreOf(createPlayer("player2")).stripTrailingZeros());
         }
     }
 
     @Test
     public void wikipediaExample1() {
         GameResultSystem gameResultSystem = GameResultSystem.STANDARD;
-        NeustadtlTieBreakSystem neustadtlTieBreakSystem = new NeustadtlTieBreakSystem(asList(
+        NeustadtlSystem neustadtlSystem = new NeustadtlSystem(asList(
                 createGame("Иванов", "Петров", gameResultSystem.getResult(draw)),
                 createGame("Иванов", "Сидоров", gameResultSystem.getResult(draw)),
                 createGame("Иванов", "Кузнецов", gameResultSystem.getResult(white_won)),
@@ -98,19 +98,19 @@ public class NeustadtlTieBreakSystemTest {
                 createGame("Смирнов", "Николаев", gameResultSystem.getResult(white_won)),
                 createGame("Васильев", "Николаев", gameResultSystem.getResult(white_won))
         ));
-        assertEquals(0, new BigDecimal(11.75).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Иванов"))));
-        assertEquals(0, new BigDecimal(10).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Петров"))));
-        assertEquals(0, new BigDecimal(9).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Сидоров"))));
-        assertEquals(0, new BigDecimal(7.75).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Кузнецов"))));
-        assertEquals(0, new BigDecimal(3).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Смирнов"))));
-        assertEquals(0, new BigDecimal(0).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Васильев"))));
-        assertEquals(0, new BigDecimal(0).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Николаев"))));
+        assertEquals(0, new BigDecimal(11.75).compareTo(neustadtlSystem.scoreOf(createPlayer("Иванов"))));
+        assertEquals(0, new BigDecimal(10).compareTo(neustadtlSystem.scoreOf(createPlayer("Петров"))));
+        assertEquals(0, new BigDecimal(9).compareTo(neustadtlSystem.scoreOf(createPlayer("Сидоров"))));
+        assertEquals(0, new BigDecimal(7.75).compareTo(neustadtlSystem.scoreOf(createPlayer("Кузнецов"))));
+        assertEquals(0, new BigDecimal(3).compareTo(neustadtlSystem.scoreOf(createPlayer("Смирнов"))));
+        assertEquals(0, new BigDecimal(0).compareTo(neustadtlSystem.scoreOf(createPlayer("Васильев"))));
+        assertEquals(0, new BigDecimal(0).compareTo(neustadtlSystem.scoreOf(createPlayer("Николаев"))));
     }
 
     @Test
     public void wikipediaExample2() {
         GameResultSystem gameResultSystem = GameResultSystem.STANDARD;
-        NeustadtlTieBreakSystem neustadtlTieBreakSystem = new NeustadtlTieBreakSystem(asList(
+        NeustadtlSystem neustadtlSystem = new NeustadtlSystem(asList(
                 createGame("Sloth", "Zagorovsky", gameResultSystem.getResult(draw)),
                 createGame("Sloth", "Kosenkov", gameResultSystem.getResult(draw)),
                 createGame("Sloth", "Khasin", gameResultSystem.getResult(white_won)),
@@ -230,21 +230,21 @@ public class NeustadtlTieBreakSystemTest {
 
                 createGame("Nun", "Siklos", gameResultSystem.getResult(black_won))
         ));
-        assertEquals(0, new BigDecimal(69.5).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Sloth"))));
-        assertEquals(0, new BigDecimal(66.75).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Zagorovsky"))));
-        assertEquals(0, new BigDecimal(67.5).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Kosenkov"))));
-        assertEquals(0, new BigDecimal(54.75).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Khasin"))));
-        assertEquals(0, new BigDecimal(47.75).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Kletsel"))));
-        assertEquals(0, new BigDecimal(45.25).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("De Carbonnel"))));
-        assertEquals(0, new BigDecimal(42.5).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Arnlind"))));
-        assertEquals(0, new BigDecimal(41.5).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Dunhaupt"))));
-        assertEquals(0, new BigDecimal(41.5).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Maedler"))));
-        assertEquals(0, new BigDecimal(40.5).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Estrin"))));
-        assertEquals(0, new BigDecimal(33.25).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Walther"))));
-        assertEquals(0, new BigDecimal(28.5).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Boey"))));
-        assertEquals(0, new BigDecimal(24.75).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Abramov"))));
-        assertEquals(0, new BigDecimal(22.75).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Siklos"))));
-        assertEquals(0, new BigDecimal(7.75).compareTo(neustadtlTieBreakSystem.scoreOf(createPlayer("Nun"))));
+        assertEquals(0, new BigDecimal(69.5).compareTo(neustadtlSystem.scoreOf(createPlayer("Sloth"))));
+        assertEquals(0, new BigDecimal(66.75).compareTo(neustadtlSystem.scoreOf(createPlayer("Zagorovsky"))));
+        assertEquals(0, new BigDecimal(67.5).compareTo(neustadtlSystem.scoreOf(createPlayer("Kosenkov"))));
+        assertEquals(0, new BigDecimal(54.75).compareTo(neustadtlSystem.scoreOf(createPlayer("Khasin"))));
+        assertEquals(0, new BigDecimal(47.75).compareTo(neustadtlSystem.scoreOf(createPlayer("Kletsel"))));
+        assertEquals(0, new BigDecimal(45.25).compareTo(neustadtlSystem.scoreOf(createPlayer("De Carbonnel"))));
+        assertEquals(0, new BigDecimal(42.5).compareTo(neustadtlSystem.scoreOf(createPlayer("Arnlind"))));
+        assertEquals(0, new BigDecimal(41.5).compareTo(neustadtlSystem.scoreOf(createPlayer("Dunhaupt"))));
+        assertEquals(0, new BigDecimal(41.5).compareTo(neustadtlSystem.scoreOf(createPlayer("Maedler"))));
+        assertEquals(0, new BigDecimal(40.5).compareTo(neustadtlSystem.scoreOf(createPlayer("Estrin"))));
+        assertEquals(0, new BigDecimal(33.25).compareTo(neustadtlSystem.scoreOf(createPlayer("Walther"))));
+        assertEquals(0, new BigDecimal(28.5).compareTo(neustadtlSystem.scoreOf(createPlayer("Boey"))));
+        assertEquals(0, new BigDecimal(24.75).compareTo(neustadtlSystem.scoreOf(createPlayer("Abramov"))));
+        assertEquals(0, new BigDecimal(22.75).compareTo(neustadtlSystem.scoreOf(createPlayer("Siklos"))));
+        assertEquals(0, new BigDecimal(7.75).compareTo(neustadtlSystem.scoreOf(createPlayer("Nun"))));
     }
 
     private Game createGame(String whiteId, String blackId, GameResultSystem.GameResult gameResult) {

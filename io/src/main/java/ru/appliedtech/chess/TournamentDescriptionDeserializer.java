@@ -44,7 +44,15 @@ public class TournamentDescriptionDeserializer extends StdDeserializer<Tournamen
                     if (nodeRoundsAmount instanceof IntNode) {
                         roundsAmount = ((IntNode) nodeRoundsAmount).asInt();
                     }
-                    tournamentSetup = new RoundRobinSetup(roundsAmount, GameResultSystem.STANDARD);
+                    List<String> tieBreakSystems = new ArrayList<>();
+                    TreeNode nodeTieBreaks = nodeTournamentSetup.get("tie-breaks");
+                    if (nodeTieBreaks instanceof ArrayNode) {
+                        for (Iterator<JsonNode> it = ((ArrayNode) nodeTieBreaks).elements(); it.hasNext(); ) {
+                            String tieBreakSystemName = it.next().asText();
+                            tieBreakSystems.add(tieBreakSystemName);
+                        }
+                    }
+                    tournamentSetup = new RoundRobinSetup(roundsAmount, GameResultSystem.STANDARD, tieBreakSystems);
                 }
             }
         }

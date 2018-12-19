@@ -7,9 +7,11 @@ import ru.appliedtech.chess.systems.roundRobin.RoundRobinSetup;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static ru.appliedtech.chess.GameResultSystem.GameResultName.white_won;
 
@@ -18,7 +20,7 @@ public class GameSerializationTest {
     private ObjectWriter objectWriter;
 
     public GameSerializationTest() {
-        gameObjectMapper = new GameObjectMapper(new RoundRobinSetup(2, GameResultSystem.STANDARD));
+        gameObjectMapper = new GameObjectMapper(new RoundRobinSetup(2, GameResultSystem.STANDARD, emptyList()));
         objectWriter = gameObjectMapper.writerWithDefaultPrettyPrinter();
     }
 

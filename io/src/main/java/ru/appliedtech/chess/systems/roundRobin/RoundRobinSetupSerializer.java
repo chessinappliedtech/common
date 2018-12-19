@@ -16,6 +16,11 @@ public class RoundRobinSetupSerializer extends StdSerializer<RoundRobinSetup> {
         gen.writeStartObject();
         gen.writeStringField("type", value.getType());
         gen.writeNumberField("roundsAmount", value.getRoundsAmount());
+        gen.writeArrayFieldStart("tie-breaks");
+        for (String tieBreakSystem : value.getTieBreakSystems()) {
+            gen.writeString(tieBreakSystem);
+        }
+        gen.writeEndArray();
         gen.writeEndObject();
     }
 }

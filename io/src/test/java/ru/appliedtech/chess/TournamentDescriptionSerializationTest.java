@@ -23,7 +23,7 @@ public class TournamentDescriptionSerializationTest {
     public void simple() throws IOException {
         TournamentDescription tournamentDescription = new TournamentDescription(
                 "t1", "arb1", asList("dep1", "dep2"), asList("gw1", "gw2"),
-                "reg1", new RoundRobinSetup(2, GameResultSystem.STANDARD));
+                "reg1", new RoundRobinSetup(2, GameResultSystem.STANDARD, asList("direct-encounter", "neustadtl")));
         String resultString = chessObjectWriter.writeValueAsString(tournamentDescription);
         TournamentDescription deserializedTournament = chessBaseObjectMapper.readValue(resultString, TournamentDescription.class);
         assertEquals(tournamentDescription.getTournamentTitle(), deserializedTournament.getTournamentTitle());
@@ -33,5 +33,6 @@ public class TournamentDescriptionSerializationTest {
         assertEquals(tournamentDescription.getGameWriters(), deserializedTournament.getGameWriters());
         assertEquals(RoundRobinSetup.class, deserializedTournament.getTournamentSetup().getClass());
         assertEquals(2, ((RoundRobinSetup)deserializedTournament.getTournamentSetup()).getRoundsAmount());
+        assertEquals(asList("direct-encounter", "neustadtl"), deserializedTournament.getTournamentSetup().getTieBreakSystems());
     }
 }

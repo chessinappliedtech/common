@@ -5,7 +5,6 @@ import ru.appliedtech.chess.Player;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -13,13 +12,14 @@ import java.util.function.Predicate;
 import static java.util.stream.Collectors.toList;
 import static ru.appliedtech.chess.GameResultSystem.GameResultName.draw;
 
-public class NeustadtlTieBreakSystem implements Comparator<Player> {
+public final class NeustadtlSystem implements ScoringTieBreakSystem {
     private final List<Game> games;
 
-    public NeustadtlTieBreakSystem(List<Game> games) {
+    public NeustadtlSystem(List<Game> games) {
         this.games = new ArrayList<>(games);
     }
 
+    @Override
     public BigDecimal scoreOf(Player player) {
         String playerId = player.getId();
         List<String> opponentIds = games.stream()
@@ -79,7 +79,7 @@ public class NeustadtlTieBreakSystem implements Comparator<Player> {
     }
 
     @Override
-    public int compare(Player o1, Player o2) {
-        return scoreOf(o1).compareTo(scoreOf(o2));
+    public String getName() {
+        return "neustadtl";
     }
 }
