@@ -1,8 +1,8 @@
-package ru.appliedtech.chess.tiebreaksystems;
+package ru.appliedtech.chess.roundrobin;
 
 import ru.appliedtech.chess.Game;
 import ru.appliedtech.chess.Player;
-import ru.appliedtech.chess.systems.roundRobin.RoundRobinSetup;
+import ru.appliedtech.chess.tiebreaksystems.*;
 
 import java.math.BigDecimal;
 import java.util.List;

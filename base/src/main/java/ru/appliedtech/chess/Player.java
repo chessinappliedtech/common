@@ -1,8 +1,7 @@
 package ru.appliedtech.chess;
 
-import java.util.HashMap;
+import java.text.MessageFormat;
 import java.util.Map;
-import java.util.StringJoiner;
 
 public final class Player {
     private final String id;
@@ -38,11 +37,8 @@ public final class Player {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Player.class.getSimpleName() + "[", "]")
-                .add("id='" + id + "'")
-                .add("firstName='" + firstName + "'")
-                .add("lastName='" + lastName + "'")
-                .add("outerServiceProfiles=" + outerServiceProfiles)
-                .toString();
+        return MessageFormat.format(
+                "Player'{'id=''{0}'', firstName=''{1}'', lastName=''{2}'', outerServiceProfiles={5}'}'",
+                id, firstName, lastName, outerServiceProfiles);
     }
 }

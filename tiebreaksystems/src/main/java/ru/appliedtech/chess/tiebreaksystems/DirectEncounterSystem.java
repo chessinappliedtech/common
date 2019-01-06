@@ -5,13 +5,16 @@ import ru.appliedtech.chess.Player;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.emptyList;
 
 public final class DirectEncounterSystem implements ScoringTieBreakSystem {
     private final List<Game> games;
 
     public DirectEncounterSystem(List<Game> games) {
-        this.games = new ArrayList<>(games);
+        this.games = games != null ? new ArrayList<>(games) : emptyList();
     }
 
     @Override

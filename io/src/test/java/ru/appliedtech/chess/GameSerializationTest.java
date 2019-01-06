@@ -2,13 +2,10 @@ package ru.appliedtech.chess;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.junit.Test;
-import ru.appliedtech.chess.GameResultSystem.GameResult;
-import ru.appliedtech.chess.systems.roundRobin.RoundRobinSetup;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.util.Collections.emptyList;
@@ -20,7 +17,7 @@ public class GameSerializationTest {
     private ObjectWriter objectWriter;
 
     public GameSerializationTest() {
-        gameObjectMapper = new GameObjectMapper(new RoundRobinSetup(2, GameResultSystem.STANDARD, emptyList()));
+        gameObjectMapper = new GameObjectMapper(new TestTournamentSetup());
         objectWriter = gameObjectMapper.writerWithDefaultPrettyPrinter();
     }
 
@@ -42,5 +39,27 @@ public class GameSerializationTest {
         assertEquals(game.getResult(), deserializedGame.getResult());
         assertEquals(game.getPgnLocation(), deserializedGame.getPgnLocation());
         assertEquals(game.getOuterServiceLinks(), deserializedGame.getOuterServiceLinks());
+    }
+
+    private static class TestTournamentSetup implements TournamentSetup {
+        @Override
+        public String getType() {
+            return "test";
+        }
+
+        @Override
+        public GameResultSystem getGameResultSystem() {
+            return GameResultSystem.STANDARD;
+        }
+
+        @Override
+        public List<String> getTieBreakSystems() {
+            return emptyList();
+        }
+
+        @Override
+        public TimeControlType getTimeControlType() {
+            return TimeControlType.CLASSIC;
+        }
     }
 }

@@ -13,6 +13,9 @@
         <module>base</module>
         <module>io</module>
         <module>tiebreaksystems</module>
+        <module>elorating</module>
+        <module>storage</module>
+        <module>roundrobin</module>
     </modules>
 
 </project>
