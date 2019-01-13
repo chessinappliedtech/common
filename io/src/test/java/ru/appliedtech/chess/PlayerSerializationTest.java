@@ -5,10 +5,11 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.HashMap;
 
+import static java.util.Collections.emptyMap;
 import static org.junit.Assert.assertEquals;
 
 public class PlayerSerializationTest {
-    private ChessBaseObjectMapper chessBaseObjectMapper = new ChessBaseObjectMapper();
+    private ChessBaseObjectMapper chessBaseObjectMapper = new ChessBaseObjectMapper(emptyMap());
     @Test
     public void simple() throws IOException {
         HashMap<String, Object> outerServiceProfiles = new HashMap<>();

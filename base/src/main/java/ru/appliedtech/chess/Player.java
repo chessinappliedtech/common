@@ -1,6 +1,5 @@
 package ru.appliedtech.chess;
 
-import java.text.MessageFormat;
 import java.util.Map;
 
 public final class Player {
@@ -37,8 +36,6 @@ public final class Player {
 
     @Override
     public String toString() {
-        return MessageFormat.format(
-                "Player'{'id=''{0}'', firstName=''{1}'', lastName=''{2}'', outerServiceProfiles={5}'}'",
-                id, firstName, lastName, outerServiceProfiles);
+        return id;
     }
 }

@@ -5,11 +5,16 @@
     <parent>
         <artifactId>common</artifactId>
         <groupId>ru.appliedtech.chess</groupId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <modules>
+        <module>io</module>
+    </modules>
+
     <artifactId>roundrobin</artifactId>
+    <packaging>pom</packaging>
 
     <build>
         <plugins>
@@ -28,23 +33,23 @@
         <dependency>
             <groupId>ru.appliedtech.chess</groupId>
             <artifactId>common-base</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>ru.appliedtech.chess</groupId>
             <artifactId>storage</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>ru.appliedtech.chess</groupId>
             <artifactId>elorating</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ru.appliedtech.chess</groupId>
             <artifactId>tiebreaksystems</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

@@ -3,15 +3,18 @@ package ru.appliedtech.chess;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static java.math.BigDecimal.*;
+import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.ZERO;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static ru.appliedtech.chess.GameResultSystem.GameResultName.*;
 
 public class GameResultSystem {
     private final Map<GameResultName, GameResult> possibleResults;
+    private final String systemName;
 
-    public GameResultSystem(Map<GameResultName, GameResult> possibleResults) {
+    public GameResultSystem(String systemName, Map<GameResultName, GameResult> possibleResults) {
+        this.systemName = systemName;
         this.possibleResults = new HashMap<>(possibleResults);
     }
 
@@ -21,6 +24,10 @@ public class GameResultSystem {
             throw new IllegalArgumentException(gameResultName.getName());
         }
         return gameResult;
+    }
+
+    public String getName() {
+        return systemName;
     }
 
     public static final GameResultSystem STANDARD = standardSystem();
@@ -34,7 +41,7 @@ public class GameResultSystem {
         possibleResults.put(white_forfeit, new GameResult(white_forfeit, ZERO, ONE));
         possibleResults.put(black_forfeit, new GameResult(black_forfeit, ONE, ZERO));
         possibleResults.put(unknown, new GameResult(unknown, ZERO, ZERO));
-        return new GameResultSystem(possibleResults);
+        return new GameResultSystem("STANDARD", possibleResults);
     }
 
     public enum GameResultName {

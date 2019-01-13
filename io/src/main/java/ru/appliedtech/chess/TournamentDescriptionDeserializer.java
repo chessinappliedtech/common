@@ -7,21 +7,21 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import ru.appliedtech.chess.systems.roundRobin.RoundRobinSetup;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
+import static java.util.Collections.emptyMap;
 import static ru.appliedtech.chess.PlayerDeserializer.getString;
 
 public class TournamentDescriptionDeserializer extends StdDeserializer<TournamentDescription> {
-    protected TournamentDescriptionDeserializer() {
+    private final Map<String, TournamentSetupObjectNodeReader> tournamentSetupObjectNodeReaders;
+
+    protected TournamentDescriptionDeserializer(Map<String, TournamentSetupObjectNodeReader> tournamentSetupObjectNodeReaders) {
         super(TournamentDescription.class);
+        this.tournamentSetupObjectNodeReaders = tournamentSetupObjectNodeReaders != null ? new HashMap<>(tournamentSetupObjectNodeReaders) : emptyMap();
     }
 
     @Override
@@ -37,23 +37,10 @@ public class TournamentDescriptionDeserializer extends StdDeserializer<Tournamen
         if (nodeTournamentSetup != null && nodeTournamentSetup.isObject() && nodeTournamentSetup instanceof ObjectNode) {
             TreeNode nodeType = nodeTournamentSetup.get("type");
             if (nodeType instanceof TextNode) {
-                String systemType = ((TextNode) nodeType).asText();
-                if ("round-robin".equals(systemType)) {
-                    TreeNode nodeRoundsAmount = nodeTournamentSetup.get("roundsAmount");
-                    int roundsAmount = 1;
-                    if (nodeRoundsAmount instanceof IntNode) {
-                        roundsAmount = ((IntNode) nodeRoundsAmount).asInt();
-                    }
-                    List<String> tieBreakSystems = new ArrayList<>();
-                    TreeNode nodeTieBreaks = nodeTournamentSetup.get("tie-breaks");
-                    if (nodeTieBreaks instanceof ArrayNode) {
-                        for (Iterator<JsonNode> it = ((ArrayNode) nodeTieBreaks).elements(); it.hasNext(); ) {
-                            String tieBreakSystemName = it.next().asText();
-                            tieBreakSystems.add(tieBreakSystemName);
-                        }
-                    }
-                    tournamentSetup = new RoundRobinSetup(roundsAmount, GameResultSystem.STANDARD, tieBreakSystems);
-                }
+                String tournamentSetupType = ((TextNode) nodeType).asText();
+                TournamentSetupObjectNodeReader tournamentSetupObjectNodeReader = tournamentSetupObjectNodeReaders.get(tournamentSetupType);
+                tournamentSetup = tournamentSetupObjectNodeReader.read((ObjectNode) nodeTournamentSetup);
+                // TODO think if advanced features of Jackson could help or made the code stable to errors
             }
         }
         return new TournamentDescription(tournamentTitle, arbiter, deputyArbiters, gameWriters, regulations, tournamentSetup);

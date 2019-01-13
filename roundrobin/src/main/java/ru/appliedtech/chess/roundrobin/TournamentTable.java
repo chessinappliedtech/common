@@ -11,19 +11,16 @@ import ru.appliedtech.chess.tiebreaksystems.ScoringTieBreakSystem;
 import ru.appliedtech.chess.tiebreaksystems.TieBreakSystem;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 public final class TournamentTable {
 
-    public static final Comparator<Player> PLAYER_ORDER_COMPARATOR =
+    private static final Comparator<Player> PLAYER_ORDER_COMPARATOR =
             comparing(Player::getLastName)
                 .thenComparing(Player::getFirstName)
                 .thenComparing(Player::getId);
@@ -34,6 +31,8 @@ public final class TournamentTable {
     private final KValueReadOnlyStorage kValueReadOnlyStorage;
     private final RoundRobinSetup roundRobinSetup;
     private List<PlayerRow> playerRows;
+    private List<TieBreakSystem> tieBreakSystems;
+    private Map<String, Integer> ranking;
 
     public TournamentTable(PlayerStorage playerStorage,
                            GameStorage gameStorage,
@@ -49,18 +48,64 @@ public final class TournamentTable {
     }
 
     private void generate() {
+        RoundRobinTieBreakSystemFactory roundRobinTieBreakSystemFactory = new RoundRobinTieBreakSystemFactory(
+                playerStorage.getPlayers(), gameStorage.getGames(), roundRobinSetup);
+        tieBreakSystems = roundRobinSetup.getTieBreakSystems().stream()
+                .map(roundRobinTieBreakSystemFactory::create)
+                .collect(toList());
         playerRows = playerStorage.getPlayers().stream()
                 .sorted(PLAYER_ORDER_COMPARATOR)
                 .map(toPlayerRow())
                 .collect(toList());
+        ranking = evaluateRanking(playerRows);
+    }
+
+    private static Map<String, Integer> evaluateRanking(List<PlayerRow> playerRows) {
+        Comparator<List<TieBreakValue>> tieBreaksComparator = new TieBreaksComparator().reversed();
+        List<PlayerRow> rankedRows = playerRows.stream()
+                .sorted(comparing(PlayerRow::getTieBreakValues, tieBreaksComparator))
+                .collect(toList());
+        Map<String, Integer> result = new HashMap<>();
+        int rank = 1;
+        PlayerRow previousPlayerRow = null;
+        for (int i = 0; i < rankedRows.size(); i++) {
+            PlayerRow playerRow = rankedRows.get(i);
+            if (i == 0) {
+                previousPlayerRow = playerRow;
+                result.put(previousPlayerRow.getPlayer().getId(), rank);
+            } else {
+                if (tieBreaksComparator.compare(previousPlayerRow.getTieBreakValues(), playerRow.getTieBreakValues()) == 0) {
+                    result.put(playerRow.getPlayer().getId(), rank);
+                } else {
+                    result.put(playerRow.getPlayer().getId(), ++rank);
+                }
+                previousPlayerRow = playerRow;
+            }
+        }
+        return result;
+    }
+
+    public int getPlayersCount() {
+        return playerRows.size();
+    }
+
+    public List<PlayerRow> getPlayerRows() {
+        return unmodifiableList(playerRows);
+    }
+
+    public Map<String, Integer> getRanking() {
+        return unmodifiableMap(ranking);
+    }
+
+    public List<TieBreakSystem> getTieBreakSystems() {
+        return tieBreakSystems;
+    }
+
+    public RoundRobinSetup getRoundRobinSetup() {
+        return roundRobinSetup;
     }
 
     private Function<Player, PlayerRow> toPlayerRow() {
-        RoundRobinTieBreakSystemFactory roundRobinTieBreakSystemFactory = new RoundRobinTieBreakSystemFactory(
-                playerStorage.getPlayers(), gameStorage.getGames(), roundRobinSetup);
-        List<TieBreakSystem> tieBreakSystems = roundRobinSetup.getTieBreakSystems().stream()
-                .map(roundRobinTieBreakSystemFactory::create)
-                .collect(toList());
         EloRatingCalculator eloRatingCalculator = new EloRatingCalculator();
         return player -> {
             EloRating initialRating = getEloRating(player.getId());
@@ -81,7 +126,7 @@ public final class TournamentTable {
             List<OpponentCell> opponents = playerStorage.getPlayers(p -> !p.getId().equals(player.getId())).stream()
                     .map(toOpponentCell(player))
                     .collect(toList());
-            return new PlayerRow(initialRating, currentRating, gamesPlayed, tieBreakValues, opponents);
+            return new PlayerRow(player, initialRating, currentRating, gamesPlayed, tieBreakValues, opponents);
         };
     }
 
@@ -111,23 +156,30 @@ public final class TournamentTable {
                 .orElse(new EloRating(roundRobinSetup.getDefaultInitialEloRating()));
     }
 
-    private static class PlayerRow {
+    public static class PlayerRow {
+        private final Player player;
         private final EloRating initialRating;
         private final EloRating currentRating;
         private final int gamesPlayed;
         private final List<TieBreakValue> tieBreakValues;
         private final List<OpponentCell> opponents;
 
-        private PlayerRow(EloRating initialRating,
+        private PlayerRow(Player player,
+                          EloRating initialRating,
                           EloRating currentRating,
                           int gamesPlayed,
                           List<TieBreakValue> tieBreakValues,
                           List<OpponentCell> opponents) {
+            this.player = player;
             this.initialRating = initialRating;
             this.currentRating = currentRating;
             this.gamesPlayed = gamesPlayed;
             this.tieBreakValues = tieBreakValues != null ? new ArrayList<>(tieBreakValues) : emptyList();
             this.opponents = opponents != null ? new ArrayList<>(opponents) : emptyList();
+        }
+
+        public Player getPlayer() {
+            return player;
         }
 
         public int getGamesPlayed() {
@@ -149,9 +201,14 @@ public final class TournamentTable {
         public List<TieBreakValue> getTieBreakValues() {
             return unmodifiableList(tieBreakValues);
         }
+
+        @Override
+        public String toString() {
+            return Objects.toString(player);
+        }
     }
 
-    private static class OpponentCell {
+    public static class OpponentCell {
         private final String opponentId;
         private final List<BigDecimal> scores;
 
@@ -167,9 +224,14 @@ public final class TournamentTable {
         public String getOpponentId() {
             return opponentId;
         }
+
+        @Override
+        public String toString() {
+            return opponentId;
+        }
     }
 
-    private static class TieBreakValue {
+    public static class TieBreakValue {
         private final TieBreakSystem tieBreakSystem;
         private final BigDecimal value;
 
@@ -184,6 +246,24 @@ public final class TournamentTable {
 
         public TieBreakSystem getTieBreakSystem() {
             return tieBreakSystem;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(value);
+        }
+    }
+
+    private static class TieBreaksComparator implements Comparator<List<TieBreakValue>> {
+        @Override
+        public int compare(List<TieBreakValue> o1, List<TieBreakValue> o2) {
+            for (int i = 0; i < o1.size(); i++) {
+                int tbsCompareResult = o1.get(i).getValue().compareTo(o2.get(i).getValue());
+                if (tbsCompareResult != 0) {
+                    return tbsCompareResult;
+                }
+            }
+            return 0;
         }
     }
 }
