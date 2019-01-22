@@ -1,13 +1,15 @@
 package ru.appliedtech.chess;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.Map;
 
-import static ru.appliedtech.chess.GameResultSystem.*;
+import static ru.appliedtech.chess.GameResultSystem.GameResult;
 import static ru.appliedtech.chess.GameResultSystem.GameResultName.*;
 
 public final class Game {
     private final String id;
+    private final String tournamentId;
     private final String whiteId;
     private final String blackId;
     private final String date;
@@ -15,13 +17,16 @@ public final class Game {
     private final String pgnLocation;
     private final Map<String, Object> outerServiceLinks;
 
-    public Game(String id, String whiteId,
+    public Game(String id,
+                String tournamentId,
+                String whiteId,
                 String blackId,
                 String date,
                 GameResult result,
                 String pgnLocation,
                 Map<String, Object> outerServiceLinks) {
         this.id = id;
+        this.tournamentId = tournamentId;
         this.whiteId = whiteId;
         this.blackId = blackId;
         this.date = date;
@@ -32,6 +37,10 @@ public final class Game {
 
     public String getId() {
         return id;
+    }
+
+    public String getTournamentId() {
+        return tournamentId;
     }
 
     public GameResult getResult() {
@@ -97,5 +106,16 @@ public final class Game {
 
     public boolean isPlayedBy(String playerId) {
         return getWhiteId().equals(playerId) || getBlackId().equals(playerId);
+    }
+
+    public boolean isGamePlayed() {
+        return getResult().getName() == GameResultSystem.GameResultName.white_won
+                || getResult().getName() == GameResultSystem.GameResultName.black_won
+                || getResult().getName() == GameResultSystem.GameResultName.draw;
+    }
+
+    @Override
+    public String toString() {
+        return MessageFormat.format("{0}-{1}: {2}", whiteId, blackId, result);
     }
 }

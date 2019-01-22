@@ -1,7 +1,6 @@
 package ru.appliedtech.chess;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
@@ -9,8 +8,8 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
 import java.util.Map;
 
-import static java.util.Arrays.stream;
-import static ru.appliedtech.chess.GameResultSystem.*;
+import static ru.appliedtech.chess.GameResultSystem.GameResult;
+import static ru.appliedtech.chess.GameResultSystem.GameResultName;
 import static ru.appliedtech.chess.GameResultSystem.GameResultName.resolve;
 import static ru.appliedtech.chess.PlayerDeserializer.getString;
 import static ru.appliedtech.chess.PlayerDeserializer.readMap;
@@ -28,6 +27,7 @@ public class GameDeserializer extends StdDeserializer<Game> {
                             DeserializationContext deserializationContext) throws IOException {
         TreeNode treeNode = jsonParser.readValueAsTree();
         String id = getString(treeNode, "id");
+        String tournamentId = getString(treeNode, "tournamentId");
         String whiteId = getString(treeNode, "whiteId");
         String blackId = getString(treeNode, "blackId");
         String date = getString(treeNode, "date");
@@ -35,6 +35,6 @@ public class GameDeserializer extends StdDeserializer<Game> {
         GameResult gameResult = tournamentSetup.getGameResultSystem().getResult(resultName);
         String pgnLocation = getString(treeNode, "pgnLocation");
         Map<String, Object> outerServiceLinks = readMap(treeNode, "outerServiceLinks");
-        return new Game(id, whiteId, blackId, date, gameResult, pgnLocation, outerServiceLinks);
+        return new Game(id, tournamentId, whiteId, blackId, date, gameResult, pgnLocation, outerServiceLinks);
     }
 }

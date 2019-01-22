@@ -117,7 +117,7 @@ public final class TournamentTable {
                     .collect(toList());
             EloRating currentRating = initialRating.sum(
                     eloRatingChanges.stream().reduce(EloRatingChange.ZERO, EloRatingChange::sum));
-            int gamesPlayed = playerGames.size();
+            int gamesPlayed = (int) playerGames.stream().filter(Game::isGamePlayed).count();
             List<TieBreakValue> tieBreakValues = tieBreakSystems.stream()
                     .filter(ScoringTieBreakSystem.class::isInstance)
                     .map(ScoringTieBreakSystem.class::cast)
@@ -144,9 +144,14 @@ public final class TournamentTable {
                                                            EloRating initialRating,
                                                            KValue kValue) {
         return game -> {
-            BigDecimal score = game.getScoreOf(player.getId());
-            EloRating opponentRating = getEloRating(game.getOpponentOf(player.getId()));
-            return eloRatingCalculator.ratingChange(initialRating, kValue, opponentRating, score);
+            boolean isGamePlayed = game.isGamePlayed();
+            if (isGamePlayed) {
+                BigDecimal score = game.getScoreOf(player.getId());
+                EloRating opponentRating = getEloRating(game.getOpponentOf(player.getId()));
+                return eloRatingCalculator.ratingChange(initialRating, kValue, opponentRating, score);
+            } else {
+                return new EloRatingChange(BigDecimal.ZERO);
+            }
         };
     }
 

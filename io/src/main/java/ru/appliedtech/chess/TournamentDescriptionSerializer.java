@@ -15,6 +15,7 @@ public class TournamentDescriptionSerializer extends StdSerializer<TournamentDes
     public void serialize(TournamentDescription tournamentDescription, JsonGenerator gen, SerializerProvider provider) throws IOException {
         gen.writeStartObject();
         gen.writeStringField("tournamentTitle", tournamentDescription.getTournamentTitle());
+        gen.writeStringField("tournamentId", tournamentDescription.getTournamentId());
         gen.writeStringField("arbiter", tournamentDescription.getArbiter());
         gen.writeStringField("regulations", tournamentDescription.getRegulations());
         gen.writeArrayFieldStart("deputyArbiters");

@@ -4,7 +4,9 @@ import java.util.List;
 
 public final class TournamentDescription {
     private final String tournamentTitle;
+    private final String tournamentId;
     private final String arbiter;
+    private final List<String> players;
     private final List<String> deputyArbiters;
     private final List<String> gameWriters;
     private final String regulations;
@@ -12,13 +14,15 @@ public final class TournamentDescription {
 
     public TournamentDescription(
             String tournamentTitle,
-            String arbiter,
-            List<String> deputyArbiters,
+            String tournamentId, String arbiter,
+            List<String> players, List<String> deputyArbiters,
             List<String> gameWriters,
             String regulations,
             TournamentSetup tournamentSetup) {
         this.tournamentTitle = tournamentTitle;
+        this.tournamentId = tournamentId;
         this.arbiter = arbiter;
+        this.players = players;
         this.deputyArbiters = deputyArbiters;
         this.gameWriters = gameWriters;
         this.regulations = regulations;
@@ -45,7 +49,15 @@ public final class TournamentDescription {
         return tournamentTitle;
     }
 
+    public String getTournamentId() {
+        return tournamentId;
+    }
+
     public TournamentSetup getTournamentSetup() {
         return tournamentSetup;
+    }
+
+    public List<String> getPlayers() {
+        return players;
     }
 }

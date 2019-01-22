@@ -9,12 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <modules>
-        <module>io</module>
-    </modules>
-
     <artifactId>roundrobin</artifactId>
-    <packaging>pom</packaging>
 
     <build>
         <plugins>

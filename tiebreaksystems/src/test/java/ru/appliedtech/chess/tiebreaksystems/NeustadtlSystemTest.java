@@ -12,7 +12,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static ru.appliedtech.chess.GameResultSystem.GameResultName.*;
 
 public class NeustadtlSystemTest {
@@ -248,7 +247,7 @@ public class NeustadtlSystemTest {
     }
 
     private Game createGame(String whiteId, String blackId, GameResultSystem.GameResult gameResult) {
-        return new Game(null, whiteId, blackId, null,
+        return new Game(null, "test", whiteId, blackId, null,
                 gameResult, null, null);
     }
 

@@ -73,7 +73,7 @@ public class KoyaSystemTest {
     }
 
     private Game createGame(String whiteId, String blackId, GameResultSystem.GameResult gameResult) {
-        return new Game(null, whiteId, blackId, null,
+        return new Game(null, "test", whiteId, blackId, null,
                 gameResult, null, null);
     }
 

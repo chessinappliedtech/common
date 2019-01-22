@@ -28,11 +28,12 @@ public class GameSerializationTest {
         HashMap<Object, Object> object = new HashMap<>();
         object.put("uri", "https://chess.com/id1");
         outerServiceLinks.put("chess.com", object);
-        Game game = new Game("id1", "white1", "black1", "01-12-2018",
+        Game game = new Game("id1", "tournament", "white1", "black1", "01-12-2018",
                 GameResultSystem.STANDARD.getResult(white_won), "data/id1_game.pgn", outerServiceLinks);
         String string = objectWriter.writeValueAsString(game);
         Game deserializedGame = gameObjectMapper.readValue(string, Game.class);
         assertEquals(game.getId(), deserializedGame.getId());
+        assertEquals(game.getTournamentId(), deserializedGame.getTournamentId());
         assertEquals(game.getWhiteId(), deserializedGame.getWhiteId());
         assertEquals(game.getBlackId(), deserializedGame.getBlackId());
         assertEquals(game.getDate(), deserializedGame.getDate());

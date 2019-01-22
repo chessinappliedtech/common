@@ -28,7 +28,9 @@ public class TournamentDescriptionDeserializer extends StdDeserializer<Tournamen
     public TournamentDescription deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         TreeNode treeNode = parser.readValueAsTree();
         String tournamentTitle = getString(treeNode, "tournamentTitle");
+        String tournamentId = getString(treeNode, "tournamentId");
         String arbiter = getString(treeNode, "arbiter");
+        List<String> players = getStringArray(treeNode, "players");
         String regulations = getString(treeNode, "regulations");
         List<String> deputyArbiters = getStringArray(treeNode, "deputyArbiters");
         List<String> gameWriters = getStringArray(treeNode, "gameWriters");
@@ -43,7 +45,7 @@ public class TournamentDescriptionDeserializer extends StdDeserializer<Tournamen
                 // TODO think if advanced features of Jackson could help or made the code stable to errors
             }
         }
-        return new TournamentDescription(tournamentTitle, arbiter, deputyArbiters, gameWriters, regulations, tournamentSetup);
+        return new TournamentDescription(tournamentTitle, tournamentId, arbiter, players, deputyArbiters, gameWriters, regulations, tournamentSetup);
     }
 
     private static List<String> getStringArray(TreeNode treeNode, String key) {

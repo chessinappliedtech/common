@@ -16,6 +16,7 @@
         <module>elorating</module>
         <module>storage</module>
         <module>roundrobin</module>
+        <module>roundrobin-io</module>
     </modules>
 
 </project>

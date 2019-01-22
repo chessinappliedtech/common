@@ -18,6 +18,13 @@ public class GameReadOnlyStorage implements GameStorage {
     }
 
     @Override
+    public List<Game> getGames(String tournamentId, String playerId1, String playerId2) {
+        return getGames(game -> game.getTournamentId().equals(tournamentId)
+                && game.isPlayedBy(playerId1)
+                && game.isPlayedBy(playerId2));
+    }
+
+    @Override
     public List<Game> getGames(String playerId1, String playerId2) {
         return getGames(game -> game.isPlayedBy(playerId1) && game.isPlayedBy(playerId2));
     }

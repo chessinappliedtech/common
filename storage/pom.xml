@@ -30,6 +30,11 @@
             <artifactId>common-base</artifactId>
             <version>0.2-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>ru.appliedtech.chess</groupId>
+            <artifactId>elorating</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>

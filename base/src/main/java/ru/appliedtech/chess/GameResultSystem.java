@@ -1,6 +1,7 @@
 package ru.appliedtech.chess;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.*;
 
 import static java.math.BigDecimal.ONE;
@@ -110,6 +111,11 @@ public class GameResultSystem {
         @Override
         public int hashCode() {
             return Objects.hash(name, whiteScore, blackScore);
+        }
+
+        @Override
+        public String toString() {
+            return MessageFormat.format("{0}[{1},{2}]", name, whiteScore, blackScore);
         }
     }
 }

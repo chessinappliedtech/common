@@ -16,6 +16,7 @@ public class GameSerializer extends StdSerializer<Game> {
     public void serialize(Game game, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField("id", game.getId());
+        jsonGenerator.writeStringField("tournamentId", game.getTournamentId());
         jsonGenerator.writeStringField("whiteId", game.getWhiteId());
         jsonGenerator.writeStringField("blackId", game.getBlackId());
         jsonGenerator.writeStringField("date", game.getDate());
