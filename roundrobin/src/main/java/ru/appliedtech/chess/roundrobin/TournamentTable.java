@@ -20,11 +20,6 @@ import static java.util.stream.Collectors.toList;
 
 public final class TournamentTable {
 
-    private static final Comparator<Player> PLAYER_ORDER_COMPARATOR =
-            comparing(Player::getLastName)
-                .thenComparing(Player::getFirstName)
-                .thenComparing(Player::getId);
-
     private final PlayerStorage playerStorage;
     private final GameStorage gameStorage;
     private final EloRatingReadOnlyStorage eloRatingStorage;
@@ -54,7 +49,6 @@ public final class TournamentTable {
                 .map(roundRobinTieBreakSystemFactory::create)
                 .collect(toList());
         playerRows = playerStorage.getPlayers().stream()
-                .sorted(PLAYER_ORDER_COMPARATOR)
                 .map(toPlayerRow())
                 .collect(toList());
         ranking = evaluateRanking(playerRows);

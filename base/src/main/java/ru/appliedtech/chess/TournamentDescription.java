@@ -1,5 +1,6 @@
 package ru.appliedtech.chess;
 
+import java.util.Date;
 import java.util.List;
 
 public final class TournamentDescription {
@@ -11,6 +12,7 @@ public final class TournamentDescription {
     private final List<String> gameWriters;
     private final String regulations;
     private final TournamentSetup tournamentSetup;
+    private final Date startDay;
 
     public TournamentDescription(
             String tournamentTitle,
@@ -18,7 +20,7 @@ public final class TournamentDescription {
             List<String> players, List<String> deputyArbiters,
             List<String> gameWriters,
             String regulations,
-            TournamentSetup tournamentSetup) {
+            Date startDay, TournamentSetup tournamentSetup) {
         this.tournamentTitle = tournamentTitle;
         this.tournamentId = tournamentId;
         this.arbiter = arbiter;
@@ -26,6 +28,7 @@ public final class TournamentDescription {
         this.deputyArbiters = deputyArbiters;
         this.gameWriters = gameWriters;
         this.regulations = regulations;
+        this.startDay = startDay;
         this.tournamentSetup = tournamentSetup;
     }
 
@@ -59,5 +62,9 @@ public final class TournamentDescription {
 
     public List<String> getPlayers() {
         return players;
+    }
+
+    public Date getStartDay() {
+        return startDay;
     }
 }

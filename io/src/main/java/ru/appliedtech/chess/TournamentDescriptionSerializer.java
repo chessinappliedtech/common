@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 public class TournamentDescriptionSerializer extends StdSerializer<TournamentDescription> {
     protected TournamentDescriptionSerializer() {
@@ -18,6 +19,7 @@ public class TournamentDescriptionSerializer extends StdSerializer<TournamentDes
         gen.writeStringField("tournamentId", tournamentDescription.getTournamentId());
         gen.writeStringField("arbiter", tournamentDescription.getArbiter());
         gen.writeStringField("regulations", tournamentDescription.getRegulations());
+        gen.writeStringField("startDay", new SimpleDateFormat("yyyy-MM-dd").format(tournamentDescription.getStartDay()));
         gen.writeArrayFieldStart("deputyArbiters");
         for (String deputyArbiter : tournamentDescription.getDeputyArbiters()) {
             gen.writeString(deputyArbiter);

@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.util.Collections.emptyMap;
@@ -34,6 +36,13 @@ public class TournamentDescriptionDeserializer extends StdDeserializer<Tournamen
         String regulations = getString(treeNode, "regulations");
         List<String> deputyArbiters = getStringArray(treeNode, "deputyArbiters");
         List<String> gameWriters = getStringArray(treeNode, "gameWriters");
+        Date startDay;
+        try {
+            String start = getString(treeNode, "startDay");
+            startDay = start != null ? new SimpleDateFormat("yyyy-MM-dd").parse(start) : new Date();
+        } catch (ParseException e) {
+            throw new IOException(e);
+        }
         TreeNode nodeTournamentSetup = treeNode.get("tournamentSetup");
         TournamentSetup tournamentSetup = null;
         if (nodeTournamentSetup != null && nodeTournamentSetup.isObject() && nodeTournamentSetup instanceof ObjectNode) {
@@ -45,7 +54,7 @@ public class TournamentDescriptionDeserializer extends StdDeserializer<Tournamen
                 // TODO think if advanced features of Jackson could help or made the code stable to errors
             }
         }
-        return new TournamentDescription(tournamentTitle, tournamentId, arbiter, players, deputyArbiters, gameWriters, regulations, tournamentSetup);
+        return new TournamentDescription(tournamentTitle, tournamentId, arbiter, players, deputyArbiters, gameWriters, regulations, startDay, tournamentSetup);
     }
 
     private static List<String> getStringArray(TreeNode treeNode, String key) {
