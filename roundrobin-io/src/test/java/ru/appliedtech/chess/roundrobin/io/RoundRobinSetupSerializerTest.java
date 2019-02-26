@@ -23,7 +23,8 @@ public class RoundRobinSetupSerializerTest {
                 4,
                 GameResultSystem.STANDARD,
                 asList("direct-encounter", "number-of-wins", "koya"),
-                TimeControlType.CLASSIC);
+                TimeControlType.CLASSIC,
+                new RoundRobinSetup.ColorAllocatingSystemDescription("fixed-alternation-color-allocating-system", 123456));
         ObjectMapper mapper = new ObjectMapper();
         SimpleModule module = new SimpleModule("round-robin");
         module.addSerializer(serializer);
@@ -37,6 +38,8 @@ public class RoundRobinSetupSerializerTest {
         assertEquals(TimeControlType.CLASSIC.name(), serialized.get("time-control-type"));
         assertEquals(asList("direct-encounter", "number-of-wins", "koya"), serialized.get("tie-breaks"));
         assertEquals(RoundRobinSetup.class.getSimpleName(), serialized.get("@type"));
+        assertEquals("fixed-alternation-color-allocating-system", ((HashMap)serialized.get("color-allocating-system")).get("name"));
+        assertEquals(123456L, ((HashMap)serialized.get("color-allocating-system")).get("seed"));
     }
 
 }

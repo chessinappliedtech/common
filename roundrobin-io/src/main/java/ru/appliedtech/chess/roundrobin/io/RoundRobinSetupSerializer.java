@@ -15,15 +15,26 @@ public class RoundRobinSetupSerializer extends StdSerializer<RoundRobinSetup> {
     @Override
     public void serialize(RoundRobinSetup value, JsonGenerator gen, SerializerProvider provider) throws IOException {
         gen.writeStartObject();
+
         gen.writeStringField("@type", value.getClass().getSimpleName());
+
         gen.writeNumberField("rounds-amount", value.getRoundsAmount());
+
         gen.writeArrayFieldStart("tie-breaks");
         for (String tieBreakSystem : value.getTieBreakSystems()) {
             gen.writeString(tieBreakSystem);
         }
         gen.writeEndArray();
+
         gen.writeStringField("game-result-system", value.getGameResultSystem().getName());
+
         gen.writeObjectField("time-control-type", value.getTimeControlType());
+
+        gen.writeObjectFieldStart("color-allocating-system");
+        gen.writeStringField("name", value.getColorAllocatingSystem());
+        gen.writeNumberField("seed", value.getColorAllocatingSystemSeed());
+        gen.writeEndObject();
+
         gen.writeEndObject();
     }
 }

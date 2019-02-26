@@ -2,10 +2,7 @@ package ru.appliedtech.chess.roundrobin.io;
 
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
+import com.fasterxml.jackson.databind.node.*;
 import ru.appliedtech.chess.GameResultSystem;
 import ru.appliedtech.chess.TimeControlType;
 import ru.appliedtech.chess.TournamentSetupObjectNodeReader;
@@ -45,6 +42,15 @@ public class RoundRobinSetupObjectNodeReader implements TournamentSetupObjectNod
             String timeControlTypeName = ((TextNode) nodeTimeControlType).asText();
             timeControlType = TimeControlType.valueOf(timeControlTypeName);
         }
-        return new RoundRobinSetup(roundsAmount, gameResultSystem, tieBreakSystems, timeControlType);
+
+        RoundRobinSetup.ColorAllocatingSystemDescription colorAllocatingSystemDescription = null;
+        TreeNode nodeColorAllocationSystem = node.get("color-allocating-system");
+        if (nodeColorAllocationSystem != null) {
+            String systemName = ((TextNode) nodeColorAllocationSystem.get("name")).asText();
+            long seed = ((NumericNode) nodeColorAllocationSystem.get("seed")).asLong();
+            colorAllocatingSystemDescription = new RoundRobinSetup.ColorAllocatingSystemDescription(systemName, seed);
+        }
+
+        return new RoundRobinSetup(roundsAmount, gameResultSystem, tieBreakSystems, timeControlType, colorAllocatingSystemDescription);
     }
 }
