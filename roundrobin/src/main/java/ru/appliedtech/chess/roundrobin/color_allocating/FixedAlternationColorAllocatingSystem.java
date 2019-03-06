@@ -18,6 +18,7 @@ public class FixedAlternationColorAllocatingSystem implements ColorAllocatingSys
         List<Pair> pairs = new ArrayList<>();
         Random random = new Random(seed);
         boolean isWhite = random.nextBoolean();
+        boolean evenNumberOfPlayers = players.size() % 2 == 0;
         for (String playerId : players) {
             for (String opponentId : players) {
                 if (playerId.equals(opponentId)) {
@@ -30,6 +31,9 @@ public class FixedAlternationColorAllocatingSystem implements ColorAllocatingSys
                 }
                 Pair pair = new Pair(playerId, opponentId, colors);
                 pairs.add(pair);
+            }
+            if (!evenNumberOfPlayers) {
+                isWhite = !isWhite;
             }
         }
         return pairs;
