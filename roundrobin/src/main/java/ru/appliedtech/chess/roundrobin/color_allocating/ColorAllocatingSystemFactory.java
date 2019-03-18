@@ -11,12 +11,12 @@ public class ColorAllocatingSystemFactory {
         this.roundRobinSetup = roundRobinSetup;
     }
 
-    public ColorAllocatingSystem create(List<String> players) {
+    public ColorAllocatingSystem create(List<String> initialPlayers, List<String> joinedPlayers) {
         int maxGames = roundRobinSetup.getRoundsAmount();
         String systemName = roundRobinSetup.getColorAllocatingSystem();
         if ("fixed-alternation-color-allocating-system".equals(systemName)) {
             long seed = roundRobinSetup.getColorAllocatingSystemSeed();
-            return new FixedAlternationColorAllocatingSystem(seed, players, maxGames);
+            return new FixedAlternationColorAllocatingSystem(seed, initialPlayers, joinedPlayers, maxGames);
         }
         throw new IllegalArgumentException(systemName);
     }

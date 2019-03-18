@@ -1,26 +1,30 @@
 package ru.appliedtech.chess.roundrobin.color_allocating;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
+
+import static java.util.stream.Collectors.toList;
 
 public class FixedAlternationColorAllocatingSystem implements ColorAllocatingSystem {
     private final int maxGames;
     private final List<Pair> pairs;
 
-    public FixedAlternationColorAllocatingSystem(long seed, List<String> players, int maxGames) {
+    FixedAlternationColorAllocatingSystem(long seed, List<String> initialPlayers,
+                                          List<String> joinedPlayers,
+                                          int maxGames) {
         this.maxGames = maxGames;
-        this.pairs = allocate(seed, players, maxGames);
+        this.pairs = allocate(seed, initialPlayers, joinedPlayers, maxGames);
     }
 
-    private List<Pair> allocate(long seed, List<String> players, int maxGames) {
+    private static List<Pair> allocate(long seed, List<String> initialPlayers,
+                                       List<String> joinedPlayers,
+                                       int maxGames) {
         List<Pair> pairs = new ArrayList<>();
         Random random = new Random(seed);
         boolean isWhite = random.nextBoolean();
-        boolean evenNumberOfPlayers = players.size() % 2 == 0;
-        for (String playerId : players) {
-            for (String opponentId : players) {
+        boolean evenNumberOfPlayers = initialPlayers.size() % 2 == 0;
+        Map<String, Counts> colorCounts = new HashMap<>();
+        for (String playerId : initialPlayers) {
+            for (String opponentId : initialPlayers) {
                 if (playerId.equals(opponentId)) {
                     continue;
                 }
@@ -31,12 +35,64 @@ public class FixedAlternationColorAllocatingSystem implements ColorAllocatingSys
                 }
                 Pair pair = new Pair(playerId, opponentId, colors);
                 pairs.add(pair);
+                storeColorCounts(colorCounts, playerId, colors);
             }
             if (!evenNumberOfPlayers) {
                 isWhite = !isWhite;
             }
         }
+        if (!evenNumberOfPlayers) {
+            isWhite = random.nextBoolean();
+            for (String playerId : initialPlayers) {
+                for (String joinedPlayerId : joinedPlayers) {
+                    List<Color> colors = new ArrayList<>();
+                    for (int i = 0; i < maxGames; i++) {
+                        colors.add(isWhite ? Color.white : Color.black);
+                        isWhite = !isWhite;
+                    }
+                    Pair pair = new Pair(playerId, joinedPlayerId, colors);
+                    pairs.add(pair);
+                    storeColorCounts(colorCounts, playerId, colors);
+                    Pair pair2 = new Pair(joinedPlayerId, playerId, colors.stream().map(Color::revert).collect(toList()));
+                    pairs.add(pair2);
+                }
+                if (joinedPlayers.size() % 2 == 0) {
+                    isWhite = !isWhite;
+                }
+            }
+        } else {
+            for (String playerId : initialPlayers) {
+                isWhite = colorCounts.get(playerId).isMoreBlacks();
+                for (String joinedPlayerId : joinedPlayers) {
+                    List<Color> colors = new ArrayList<>();
+                    for (int i = 0; i < maxGames; i++) {
+                        colors.add(isWhite ? Color.white : Color.black);
+                        isWhite = !isWhite;
+                    }
+                    Pair pair = new Pair(playerId, joinedPlayerId, colors);
+                    pairs.add(pair);
+                    storeColorCounts(colorCounts, playerId, colors);
+                    Pair pair2 = new Pair(joinedPlayerId, playerId, colors.stream().map(Color::revert).collect(toList()));
+                    pairs.add(pair2);
+                }
+            }
+        }
         return pairs;
+    }
+
+    private static void storeColorCounts(Map<String, Counts> colorCounts, String playerId, List<Color> colors) {
+        colorCounts.compute(playerId, (key, value) -> {
+            if (value == null) {
+                value = new Counts(
+                        colors.stream().filter(c -> c == Color.white).count(),
+                        colors.stream().filter(c -> c == Color.black).count());
+            } else {
+                value = value.increase(
+                        colors.stream().filter(c -> c == Color.white).count(),
+                        colors.stream().filter(c -> c == Color.black).count());
+            }
+            return value;
+        });
     }
 
     @Override
@@ -47,6 +103,40 @@ public class FixedAlternationColorAllocatingSystem implements ColorAllocatingSys
                 .findFirst()
                 .map(p -> p.getColor(gameNumber))
                 .orElseThrow(IllegalStateException::new);
+    }
+
+    private final static class Counts {
+        private long whites;
+        private long blacks;
+
+        Counts(long whites, long blacks) {
+            this.whites = whites;
+            this.blacks = blacks;
+        }
+
+        long getBlacks() {
+            return blacks;
+        }
+
+        long getWhites() {
+            return whites;
+        }
+
+        Counts increase(long whites, long blacks) {
+            return new Counts(this.whites + whites, this.blacks + blacks);
+        }
+
+        boolean isMoreWhites() {
+            return whites > blacks;
+        }
+
+        boolean isMoreBlacks() {
+            return blacks > whites;
+        }
+
+        boolean isEven() {
+            return whites == blacks;
+        }
     }
 
     private final static class Pair {

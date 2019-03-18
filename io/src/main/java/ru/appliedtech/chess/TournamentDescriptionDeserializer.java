@@ -1,7 +1,6 @@
 package ru.appliedtech.chess;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,7 +26,7 @@ public class TournamentDescriptionDeserializer extends StdDeserializer<Tournamen
     }
 
     @Override
-    public TournamentDescription deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public TournamentDescription deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
         TreeNode treeNode = parser.readValueAsTree();
         String tournamentTitle = getString(treeNode, "tournamentTitle");
         String tournamentId = getString(treeNode, "tournamentId");
@@ -36,6 +35,8 @@ public class TournamentDescriptionDeserializer extends StdDeserializer<Tournamen
         String regulations = getString(treeNode, "regulations");
         List<String> deputyArbiters = getStringArray(treeNode, "deputyArbiters");
         List<String> gameWriters = getStringArray(treeNode, "gameWriters");
+        List<String> joinedPlayers = getStringArray(treeNode, "joinedPlayers");
+        List<String> quitPlayers = getStringArray(treeNode, "quitPlayers");
         Date startDay;
         try {
             String start = getString(treeNode, "startDay");
@@ -54,7 +55,9 @@ public class TournamentDescriptionDeserializer extends StdDeserializer<Tournamen
                 // TODO think if advanced features of Jackson could help or made the code stable to errors
             }
         }
-        return new TournamentDescription(tournamentTitle, tournamentId, arbiter, players, deputyArbiters, gameWriters, regulations, startDay, tournamentSetup);
+        return new TournamentDescription(tournamentTitle, tournamentId,
+                arbiter, players, deputyArbiters, gameWriters, regulations,
+                startDay, tournamentSetup, joinedPlayers, quitPlayers);
     }
 
     private static List<String> getStringArray(TreeNode treeNode, String key) {

@@ -12,6 +12,7 @@ import ru.appliedtech.chess.storage.PlayerStorage;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -49,7 +50,9 @@ public class PlayerStatus {
     }
 
     private void generate() {
-        List<Player> otherPlayers = tournamentDescription.getPlayers().stream()
+        List<String> players = new ArrayList<>(tournamentDescription.getPlayers());
+        players.addAll(tournamentDescription.getJoinedPlayers());
+        List<Player> otherPlayers = players.stream()
                 .filter(id -> !id.equals(player.getId()))
                 .map(toPlayer())
                 .collect(toList());
