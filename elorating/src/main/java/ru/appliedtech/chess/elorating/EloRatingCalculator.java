@@ -54,7 +54,7 @@ public class EloRatingCalculator {
             sp(26, 32, new BigDecimal(0.54), new BigDecimal(0.46)),
             sp(33, 39, new BigDecimal(0.55), new BigDecimal(0.45)),
             sp(40, 46, new BigDecimal(0.56), new BigDecimal(0.44)),
-            sp(47, 43, new BigDecimal(0.57), new BigDecimal(0.43)),
+            sp(47, 53, new BigDecimal(0.57), new BigDecimal(0.43)),
             sp(54, 61, new BigDecimal(0.58), new BigDecimal(0.42)),
             sp(62, 68, new BigDecimal(0.59), new BigDecimal(0.41)),
             sp(69, 76, new BigDecimal(0.60), new BigDecimal(0.40)),
