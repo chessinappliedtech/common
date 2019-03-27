@@ -25,6 +25,8 @@ public final class TournamentTable {
     private final EloRatingReadOnlyStorage eloRatingStorage;
     private final KValueReadOnlyStorage kValueReadOnlyStorage;
     private final RoundRobinSetup roundRobinSetup;
+    private final List<String> registeredPlayers;
+    private final List<String> quitPlayers;
     private List<PlayerRow> playerRows;
     private List<TieBreakSystem> tieBreakSystems;
     private Map<String, Integer> ranking;
@@ -33,22 +35,30 @@ public final class TournamentTable {
                            GameStorage gameStorage,
                            EloRatingReadOnlyStorage eloRatingStorage,
                            KValueReadOnlyStorage kValueReadOnlyStorage,
-                           RoundRobinSetup roundRobinSetup) {
+                           RoundRobinSetup roundRobinSetup,
+                           List<String> registeredPlayers,
+                           List<String> quitPlayers) {
         this.playerStorage = playerStorage;
         this.gameStorage = gameStorage;
         this.eloRatingStorage = eloRatingStorage;
         this.kValueReadOnlyStorage = kValueReadOnlyStorage;
         this.roundRobinSetup = roundRobinSetup;
+        this.registeredPlayers = registeredPlayers;
+        this.quitPlayers = quitPlayers;
         generate();
     }
 
     private void generate() {
+        List<Player> players = playerStorage.getPlayers()
+                .stream()
+                .filter(player -> registeredPlayers.contains(player.getId()))
+                .collect(toList());
         RoundRobinTieBreakSystemFactory roundRobinTieBreakSystemFactory = new RoundRobinTieBreakSystemFactory(
-                playerStorage.getPlayers(), gameStorage.getGames(), roundRobinSetup);
+                players, gameStorage.getGames(), roundRobinSetup);
         tieBreakSystems = roundRobinSetup.getTieBreakSystems().stream()
                 .map(roundRobinTieBreakSystemFactory::create)
                 .collect(toList());
-        playerRows = playerStorage.getPlayers().stream()
+        playerRows = players.stream()
                 .map(toPlayerRow())
                 .collect(toList());
         ranking = evaluateRanking(playerRows);
@@ -57,6 +67,7 @@ public final class TournamentTable {
     private static Map<String, Integer> evaluateRanking(List<PlayerRow> playerRows) {
         Comparator<List<TieBreakValue>> tieBreaksComparator = new TieBreaksComparator().reversed();
         List<PlayerRow> rankedRows = playerRows.stream()
+                .filter(playerRow -> !playerRow.isQuit())
                 .sorted(comparing(PlayerRow::getTieBreakValues, tieBreaksComparator))
                 .collect(toList());
         Map<String, Integer> result = new HashMap<>();
@@ -120,7 +131,8 @@ public final class TournamentTable {
             List<OpponentCell> opponents = playerStorage.getPlayers(p -> !p.getId().equals(player.getId())).stream()
                     .map(toOpponentCell(player))
                     .collect(toList());
-            return new PlayerRow(player, initialRating, currentRating, gamesPlayed, tieBreakValues, opponents);
+            boolean isQuit = quitPlayers.contains(player.getId());
+            return new PlayerRow(player, initialRating, currentRating, gamesPlayed, tieBreakValues, opponents, isQuit);
         };
     }
 
@@ -129,7 +141,8 @@ public final class TournamentTable {
             List<BigDecimal> scores = gameStorage.getGames(player.getId(), opponent.getId()).stream()
                     .map(game -> game.getScoreOf(player.getId()))
                     .collect(toList());
-            return new OpponentCell(opponent.getId(), scores);
+            boolean isQuit = quitPlayers.contains(opponent.getId());
+            return new OpponentCell(opponent.getId(), scores, isQuit);
         };
     }
 
@@ -162,19 +175,22 @@ public final class TournamentTable {
         private final int gamesPlayed;
         private final List<TieBreakValue> tieBreakValues;
         private final List<OpponentCell> opponents;
+        private final boolean isQuit;
 
         private PlayerRow(Player player,
                           EloRating initialRating,
                           EloRating currentRating,
                           int gamesPlayed,
                           List<TieBreakValue> tieBreakValues,
-                          List<OpponentCell> opponents) {
+                          List<OpponentCell> opponents,
+                          boolean isQuit) {
             this.player = player;
             this.initialRating = initialRating;
             this.currentRating = currentRating;
             this.gamesPlayed = gamesPlayed;
             this.tieBreakValues = tieBreakValues != null ? new ArrayList<>(tieBreakValues) : emptyList();
             this.opponents = opponents != null ? new ArrayList<>(opponents) : emptyList();
+            this.isQuit = isQuit;
         }
 
         public Player getPlayer() {
@@ -201,6 +217,10 @@ public final class TournamentTable {
             return unmodifiableList(tieBreakValues);
         }
 
+        public boolean isQuit() {
+            return isQuit;
+        }
+
         @Override
         public String toString() {
             return Objects.toString(player);
@@ -210,10 +230,12 @@ public final class TournamentTable {
     public static class OpponentCell {
         private final String opponentId;
         private final List<BigDecimal> scores;
+        private final boolean isQuit;
 
-        private OpponentCell(String opponentId, List<BigDecimal> scores) {
+        private OpponentCell(String opponentId, List<BigDecimal> scores, boolean isQuit) {
             this.opponentId = opponentId;
             this.scores = scores != null ? new ArrayList<>(scores) : emptyList();
+            this.isQuit = isQuit;
         }
 
         public List<BigDecimal> getScores() {
@@ -222,6 +244,10 @@ public final class TournamentTable {
 
         public String getOpponentId() {
             return opponentId;
+        }
+
+        public boolean isQuit() {
+            return isQuit;
         }
 
         @Override
