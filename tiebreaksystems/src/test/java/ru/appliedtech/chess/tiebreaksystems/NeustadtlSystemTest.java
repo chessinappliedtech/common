@@ -4,6 +4,7 @@ import org.junit.Test;
 import ru.appliedtech.chess.Game;
 import ru.appliedtech.chess.GameResultSystem;
 import ru.appliedtech.chess.Player;
+import ru.appliedtech.chess.TimeControlType;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -248,7 +249,7 @@ public class NeustadtlSystemTest {
 
     private Game createGame(String whiteId, String blackId, GameResultSystem.GameResult gameResult) {
         return new Game(null, "test", whiteId, blackId, null,
-                gameResult, null, null);
+                TimeControlType.RAPID, gameResult, null, null);
     }
 
     private Player createPlayer(String playerId) {

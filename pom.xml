@@ -17,6 +17,8 @@
         <module>storage</module>
         <module>roundrobin</module>
         <module>roundrobin-io</module>
+        <module>playoff</module>
+        <module>playoff-io</module>
     </modules>
 
 </project>

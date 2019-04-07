@@ -51,6 +51,8 @@ public class RoundRobinSetupObjectNodeReader implements TournamentSetupObjectNod
             colorAllocatingSystemDescription = new RoundRobinSetup.ColorAllocatingSystemDescription(systemName, seed);
         }
 
-        return new RoundRobinSetup(roundsAmount, gameResultSystem, tieBreakSystems, timeControlType, colorAllocatingSystemDescription);
+        return new RoundRobinSetup(
+                roundsAmount, gameResultSystem, tieBreakSystems,
+                timeControlType, colorAllocatingSystemDescription);
     }
 }

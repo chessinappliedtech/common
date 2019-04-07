@@ -1,5 +1,7 @@
 package ru.appliedtech.chess.roundrobin.color_allocating;
 
+import ru.appliedtech.chess.Color;
+
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;

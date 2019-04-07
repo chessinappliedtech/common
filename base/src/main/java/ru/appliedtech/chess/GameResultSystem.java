@@ -12,11 +12,13 @@ import static ru.appliedtech.chess.GameResultSystem.GameResultName.*;
 
 public class GameResultSystem {
     private final Map<GameResultName, GameResult> possibleResults;
+    private final BigDecimal maxResult;
     private final String systemName;
 
-    public GameResultSystem(String systemName, Map<GameResultName, GameResult> possibleResults) {
+    public GameResultSystem(String systemName, Map<GameResultName, GameResult> possibleResults, BigDecimal maxResult) {
         this.systemName = systemName;
         this.possibleResults = new HashMap<>(possibleResults);
+        this.maxResult = maxResult;
     }
 
     public GameResult getResult(GameResultName gameResultName) {
@@ -25,6 +27,10 @@ public class GameResultSystem {
             throw new IllegalArgumentException(gameResultName.getName());
         }
         return gameResult;
+    }
+
+    public BigDecimal getMaxResult(int games) {
+        return maxResult.multiply(new BigDecimal(games));
     }
 
     public String getName() {
@@ -42,7 +48,7 @@ public class GameResultSystem {
         possibleResults.put(white_forfeit, new GameResult(white_forfeit, ZERO, ONE));
         possibleResults.put(black_forfeit, new GameResult(black_forfeit, ONE, ZERO));
         possibleResults.put(unknown, new GameResult(unknown, ZERO, ZERO));
-        return new GameResultSystem("STANDARD", possibleResults);
+        return new GameResultSystem("STANDARD", possibleResults, BigDecimal.ONE);
     }
 
     public enum GameResultName {

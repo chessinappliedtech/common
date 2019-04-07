@@ -13,6 +13,7 @@ public final class Game {
     private final String whiteId;
     private final String blackId;
     private final String date;
+    private final TimeControlType timeControlType;
     private final GameResult result;
     private final String pgnLocation;
     private final Map<String, Object> outerServiceLinks;
@@ -22,7 +23,7 @@ public final class Game {
                 String whiteId,
                 String blackId,
                 String date,
-                GameResult result,
+                TimeControlType timeControlType, GameResult result,
                 String pgnLocation,
                 Map<String, Object> outerServiceLinks) {
         this.id = id;
@@ -30,6 +31,7 @@ public final class Game {
         this.whiteId = whiteId;
         this.blackId = blackId;
         this.date = date;
+        this.timeControlType = timeControlType;
         this.result = result;
         this.pgnLocation = pgnLocation;
         this.outerServiceLinks = outerServiceLinks;
@@ -112,6 +114,10 @@ public final class Game {
         return getResult().getName() == GameResultSystem.GameResultName.white_won
                 || getResult().getName() == GameResultSystem.GameResultName.black_won
                 || getResult().getName() == GameResultSystem.GameResultName.draw;
+    }
+
+    public TimeControlType getTimeControlType() {
+        return timeControlType;
     }
 
     @Override

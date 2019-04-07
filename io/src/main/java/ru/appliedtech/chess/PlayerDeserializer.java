@@ -66,6 +66,15 @@ public class PlayerDeserializer extends StdDeserializer<Player> {
         return value;
     }
 
+    static String getString(TreeNode treeNode, String key, String defaultValue) {
+        String value = defaultValue;
+        TreeNode node = treeNode.get(key);
+        if (node != null && node.isValueNode() && node instanceof TextNode) {
+            value = ((TextNode)node).asText();
+        }
+        return value;
+    }
+
     private static BigDecimal getBigDecimal(TreeNode treeNode, String key) {
         BigDecimal value = null;
         TreeNode node = treeNode.get(key);

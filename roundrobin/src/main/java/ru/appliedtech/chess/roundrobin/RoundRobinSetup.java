@@ -42,12 +42,10 @@ public class RoundRobinSetup implements TournamentSetup {
         return gameResultSystem;
     }
 
-    @Override
     public List<String> getTieBreakSystems() {
         return tieBreakSystems;
     }
 
-    @Override
     public TimeControlType getTimeControlType() {
         return timeControlType;
     }

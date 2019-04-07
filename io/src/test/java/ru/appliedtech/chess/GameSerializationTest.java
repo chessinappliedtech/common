@@ -5,10 +5,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static ru.appliedtech.chess.GameResultSystem.GameResultName.white_won;
 
@@ -28,8 +26,9 @@ public class GameSerializationTest {
         HashMap<Object, Object> object = new HashMap<>();
         object.put("uri", "https://chess.com/id1");
         outerServiceLinks.put("chess.com", object);
+        TimeControlType timeControlType = TimeControlType.RAPID;
         Game game = new Game("id1", "tournament", "white1", "black1", "01-12-2018",
-                GameResultSystem.STANDARD.getResult(white_won), "data/id1_game.pgn", outerServiceLinks);
+                timeControlType, GameResultSystem.STANDARD.getResult(white_won), "data/id1_game.pgn", outerServiceLinks);
         String string = objectWriter.writeValueAsString(game);
         Game deserializedGame = gameObjectMapper.readValue(string, Game.class);
         assertEquals(game.getId(), deserializedGame.getId());
@@ -51,16 +50,6 @@ public class GameSerializationTest {
         @Override
         public GameResultSystem getGameResultSystem() {
             return GameResultSystem.STANDARD;
-        }
-
-        @Override
-        public List<String> getTieBreakSystems() {
-            return emptyList();
-        }
-
-        @Override
-        public TimeControlType getTimeControlType() {
-            return TimeControlType.CLASSIC;
         }
     }
 }
