@@ -15,6 +15,7 @@ public final class TournamentDescription {
     private final Date startDay;
     private final List<String> joinedPlayers;
     private final List<String> quitPlayers;
+    private final List<Link> links;
 
     public TournamentDescription(
             String tournamentTitle,
@@ -22,7 +23,11 @@ public final class TournamentDescription {
             List<String> players, List<String> deputyArbiters,
             List<String> gameWriters,
             String regulations,
-            Date startDay, TournamentSetup tournamentSetup, List<String> joinedPlayers, List<String> quitPlayers) {
+            Date startDay,
+            TournamentSetup tournamentSetup,
+            List<String> joinedPlayers,
+            List<String> quitPlayers,
+            List<Link> links) {
         this.tournamentTitle = tournamentTitle;
         this.tournamentId = tournamentId;
         this.arbiter = arbiter;
@@ -34,6 +39,7 @@ public final class TournamentDescription {
         this.tournamentSetup = tournamentSetup;
         this.joinedPlayers = joinedPlayers;
         this.quitPlayers = quitPlayers;
+        this.links = links;
     }
 
     public String getRegulations() {
@@ -78,5 +84,9 @@ public final class TournamentDescription {
 
     public List<String> getQuitPlayers() {
         return quitPlayers;
+    }
+
+    public List<Link> getLinks() {
+        return links;
     }
 }

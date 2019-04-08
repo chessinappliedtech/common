@@ -55,9 +55,21 @@ public class TournamentDescriptionDeserializer extends StdDeserializer<Tournamen
                 // TODO think if advanced features of Jackson could help or made the code stable to errors
             }
         }
+        List<Link> links = new ArrayList<>();
+        TreeNode nodeLink = treeNode.get("links");
+        if (nodeLink instanceof ArrayNode) {
+            Iterator<JsonNode> nodes = ((ArrayNode) nodeLink).iterator();
+            for (;nodes.hasNext();) {
+                JsonNode node = nodes.next();
+                String value = node.get("value").asText();
+                String name = node.get("name").asText();
+                String purpose = node.get("purpose").asText();
+                links.add(new Link(purpose, value, name));
+            }
+        }
         return new TournamentDescription(tournamentTitle, tournamentId,
                 arbiter, players, deputyArbiters, gameWriters, regulations,
-                startDay, tournamentSetup, joinedPlayers, quitPlayers);
+                startDay, tournamentSetup, joinedPlayers, quitPlayers, links);
     }
 
     private static List<String> getStringArray(TreeNode treeNode, String key) {
