@@ -1,9 +1,7 @@
 package ru.appliedtech.chess.playoff;
 
 import ru.appliedtech.chess.*;
-import ru.appliedtech.chess.storage.EloRatingReadOnlyStorage;
 import ru.appliedtech.chess.storage.GameStorage;
-import ru.appliedtech.chess.storage.KValueReadOnlyStorage;
 import ru.appliedtech.chess.storage.PlayerStorage;
 
 import java.math.BigDecimal;
@@ -19,8 +17,6 @@ public class PlayoffLevelTable {
     private final PlayoffLevelPlayers levelPlayers;
     private final PlayerStorage playerStorage;
     private final GameStorage gameStorage;
-    private final EloRatingReadOnlyStorage eloRatingStorage;
-    private final KValueReadOnlyStorage kValueReadOnlyStorage;
     private final PlayoffSetup playoffSetup;
     private final TournamentDescription tournamentDescription;
     private Player player1;
@@ -33,16 +29,12 @@ public class PlayoffLevelTable {
             PlayoffLevelPlayers levelPlayers,
             PlayerStorage playerStorage,
             GameStorage gameStorage,
-            EloRatingReadOnlyStorage eloRatingStorage,
-            KValueReadOnlyStorage kValueReadOnlyStorage,
             PlayoffSetup playoffSetup,
             TournamentDescription tournamentDescription) {
         this.level = level;
         this.levelPlayers = levelPlayers;
         this.playerStorage = playerStorage;
         this.gameStorage = gameStorage;
-        this.eloRatingStorage = eloRatingStorage;
-        this.kValueReadOnlyStorage = kValueReadOnlyStorage;
         this.playoffSetup = playoffSetup;
         this.tournamentDescription = tournamentDescription;
         generate();

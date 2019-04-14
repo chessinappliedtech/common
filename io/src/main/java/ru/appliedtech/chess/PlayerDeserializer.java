@@ -6,8 +6,8 @@ import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.node.DecimalNode;
 import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
@@ -57,7 +57,7 @@ public class PlayerDeserializer extends StdDeserializer<Player> {
         return result;
     }
 
-    static String getString(TreeNode treeNode, String key) {
+    public static String getString(TreeNode treeNode, String key) {
         String value = null;
         TreeNode node = treeNode.get(key);
         if (node != null && node.isValueNode() && node instanceof TextNode) {
@@ -75,17 +75,21 @@ public class PlayerDeserializer extends StdDeserializer<Player> {
         return value;
     }
 
-    private static BigDecimal getBigDecimal(TreeNode treeNode, String key) {
+    public static BigDecimal getBigDecimal(TreeNode treeNode, String key) {
         BigDecimal value = null;
         TreeNode node = treeNode.get(key);
-        if (node != null && node.isValueNode() && node instanceof DecimalNode) {
-            value = ((DecimalNode)node).decimalValue();
+        if (node != null && node.isValueNode()) {
+            value = ((NumericNode)node).decimalValue();
         }
         return value;
     }
 
-    private static int getInt(TreeNode treeNode, String key) {
-        int value = 0;
+    public static int getInt(TreeNode treeNode, String key) {
+        return getInt(treeNode, key, 0);
+    }
+
+    public static int getInt(TreeNode treeNode, String key, int defaultValue) {
+        int value = defaultValue;
         TreeNode node = treeNode.get(key);
         if (node != null && node.isValueNode() && node instanceof IntNode) {
             value = ((IntNode)node).intValue();

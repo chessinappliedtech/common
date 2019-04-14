@@ -2,6 +2,8 @@ package ru.appliedtech.chess.elorating;
 
 import ru.appliedtech.chess.TimeControlType;
 
+import java.text.MessageFormat;
+
 public class KValueSet {
     private final KValue classic;
     private final KValue rapid;
@@ -37,5 +39,10 @@ public class KValueSet {
             default:
                 return KValue.ZERO;
         }
+    }
+
+    @Override
+    public String toString() {
+        return MessageFormat.format("c={0}, r={1}, b={2}", classic, rapid, blitz);
     }
 }

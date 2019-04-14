@@ -15,11 +15,16 @@ import static ru.appliedtech.chess.PlayerDeserializer.getString;
 import static ru.appliedtech.chess.PlayerDeserializer.readMap;
 
 public class GameDeserializer extends StdDeserializer<Game> {
-    private final TournamentSetup tournamentSetup;
+    private final GameResultSystem gameResultSystem;
 
     GameDeserializer(TournamentSetup tournamentSetup) {
         super(Game.class);
-        this.tournamentSetup = tournamentSetup;
+        this.gameResultSystem = tournamentSetup.getGameResultSystem();
+    }
+
+    GameDeserializer(GameResultSystem gameResultSystem) {
+        super(Game.class);
+        this.gameResultSystem = gameResultSystem;
     }
 
     @Override
@@ -32,7 +37,7 @@ public class GameDeserializer extends StdDeserializer<Game> {
         String blackId = getString(treeNode, "blackId");
         String date = getString(treeNode, "date");
         GameResultName resultName = resolve(getString(treeNode, "result"));
-        GameResult gameResult = tournamentSetup.getGameResultSystem().getResult(resultName);
+        GameResult gameResult = gameResultSystem.getResult(resultName);
         String pgnLocation = getString(treeNode, "pgnLocation");
         Map<String, Object> outerServiceLinks = readMap(treeNode, "outerServiceLinks");
         TimeControlType timeControlType = TimeControlType.resolve(getString(treeNode, "timeControlType", "RAPID"));
