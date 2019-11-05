@@ -24,7 +24,7 @@
     </build>
 
     <properties>
-        <jackson-version>2.9.8</jackson-version>
+        <jackson-version>2.10.0</jackson-version>
     </properties>
 
     <dependencies>
